@@ -5,6 +5,7 @@ Installs and configures [Azkaban](https://github.com/azkaban/azkaban)
 # License and Author
 
 Author:: Cliff Erson (<cdickerson@riotgames.com>)
+
 Author:: Jamie Winsor (<jamie@vialstudios.com>)
 
 Copyright 2012, Riot Games
