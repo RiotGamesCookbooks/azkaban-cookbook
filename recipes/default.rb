@@ -3,6 +3,7 @@
 # Recipe:: default
 #
 # Author:: Cliff Erson (<cdickerson@riotgames.com>)
+# Author:: Jamie Winsor (<jamie@vialstudios.com>)
 # Copyright 2012, Riot Games
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,13 +38,17 @@ end
   end
 end
 
-remote_file "/tmp/azkaban.tar.gz" do
+azkaban_tar = "#{Chef::Config[:file_cache_path]}/azkaban-master.tar.gz"
+
+remote_file azkaban_tar do
   source node[:azkaban][:source_tar]
-  not_if {File.exists?("#{node[:azkaban][:deploy_to]}/bin")}
-  notifies :run, "execute[explode azkaban]", :immediately
+  action :create_if_missing
+  
+  notifies :run, "execute[extract_azkaban]", :immediately
+  not_if { File.exists?("#{node[:azkaban][:deploy_to]}/bin") }
 end
 
-execute "extract azkaban package" do
-  command "tar -xzf /tmp/azkaban.tar.gz -C #{node[:azkaban][:deploy_to]} --strip=1"
+execute "extract_azkaban" do
+  command "tar -xzf #{azkaban_tar} -C #{node[:azkaban][:deploy_to]} --strip=1"
   action :nothing
 end
