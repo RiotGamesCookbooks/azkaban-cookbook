@@ -18,8 +18,6 @@
 # limitations under the License.
 #
 
-# Add azkaban user and group
-
 group "#{node[:azkaban][:group]}" 
 
 user "#{node[:azkaban][:user]}" do
@@ -29,7 +27,6 @@ user "#{node[:azkaban][:user]}" do
   shell "/bin/false"
 end
 
-# Create directories for install and jobs
 %w( job_dir deploy_to ).each do |key|
   directory node[:azkaban][key.to_sym] do
     mode 0750
@@ -40,14 +37,12 @@ end
   end
 end
 
-# Get the tar
 remote_file "/tmp/azkaban.tar.gz" do
   source "#{node[:azkaban][:source_tar]}"
   not_if {File.exists?("#{node[:azkaban][:deploy_to]}/bin")}
   notifies :run, "execute[explode azkaban]", :immediately
 end
 
-# Explode/install the tar
 execute "explode azkaban" do
   command "tar -xzf /tmp/azkaban.tar.gz -C #{node[:azkaban][:deploy_to]} --strip=1"
   action :nothing
