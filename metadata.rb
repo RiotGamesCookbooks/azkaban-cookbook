@@ -1,6 +1,6 @@
-maintainer       "Riot Games Inc"
-maintainer_email "merlindev@riotgames.com"
-license          "All rights reserved"
-description      "Installs/Configures azkaban"
+maintainer       "Riot Games"
+maintainer_email "cdickerson@riotgames.com"
+license          "Apache 2.0"
+description      "Installs and configures azkaban"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "0.0.1"
