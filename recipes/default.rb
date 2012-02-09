@@ -18,32 +18,32 @@
 # limitations under the License.
 #
 
-group "#{node[:azkaban][:group]}" 
+group node[:azkaban][:group]
 
-user "#{node[:azkaban][:user]}" do
+user node[:azkaban][:user] do
   comment "Azkaban Job scheduler"
   system true
-  gid "#{node[:azkaban][:group]}"
+  gid node[:azkaban][:group]
   shell "/bin/false"
 end
 
-%w( job_dir deploy_to ).each do |key|
-  directory node[:azkaban][key.to_sym] do
+[:job_dir, :deploy_to].each do |directory|
+  directory node[:azkaban][directory] do
     mode 0750
-    owner "#{node[:azkaban][:user]}"
-    group "#{node[:azkaban][:group]}"
+    owner node[:azkaban][:user]
+    group node[:azkaban][:group]
     action :create
     recursive true
   end
 end
 
 remote_file "/tmp/azkaban.tar.gz" do
-  source "#{node[:azkaban][:source_tar]}"
+  source node[:azkaban][:source_tar]
   not_if {File.exists?("#{node[:azkaban][:deploy_to]}/bin")}
   notifies :run, "execute[explode azkaban]", :immediately
 end
 
-execute "explode azkaban" do
+execute "extract azkaban package" do
   command "tar -xzf /tmp/azkaban.tar.gz -C #{node[:azkaban][:deploy_to]} --strip=1"
   action :nothing
 end
