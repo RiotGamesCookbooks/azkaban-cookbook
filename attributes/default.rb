@@ -2,7 +2,7 @@
 # Cookbook Name:: azkaban
 # Attributes:: default
 #
-# Author:: Cliff Erson (<cdickerson@riotgames.com>)
+# Author:: Cliff Erson (<cerson@me.com>)
 # Copyright 2012, Riot Games
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@
 
 default[:azkaban][:user] = "azkaban"
 default[:azkaban][:group] = "azkaban"
+default[:azkaban][:version] = "0.10"
 default[:azkaban][:job_dir] = "/srv/azkaban-jobs"
-default[:azkaban][:deploy_to] = "/srv/azkaban"
-default[:azkaban][:source_tar] = "https://github.com/azkaban/azkaban/tarball/master"
+default[:azkaban][:deploy_to] = "/srv"
+default[:azkaban][:source_tar] = "https://github.com/downloads/azkaban/azkaban"

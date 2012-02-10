@@ -2,7 +2,7 @@
 # Cookbook Name:: azkaban
 # Recipe:: default
 #
-# Author:: Cliff Erson (<cdickerson@riotgames.com>)
+# Author:: Cliff Erson (<cerson@me.com>)
 # Author:: Jamie Winsor (<jamie@vialstudios.com>)
 # Copyright 2012, Riot Games
 #
@@ -38,10 +38,12 @@ end
   end
 end
 
-azkaban_tar = "#{Chef::Config[:file_cache_path]}/azkaban-master.tar.gz"
+azkaban_tar = "#{Chef::Config[:file_cache_path]}/azkaban-#{node[:azkaban][:version]}.tar.gz"
+
+log "Downloading Azkaban..."
 
 remote_file azkaban_tar do
-  source node[:azkaban][:source_tar]
+  source "#{node[:azkaban][:source_tar]}/azkaban-#{node[:azkaban][:version]}.tar.gz"
   action :create_if_missing
   
   notifies :run, "execute[extract_azkaban]", :immediately
@@ -49,6 +51,19 @@ remote_file azkaban_tar do
 end
 
 execute "extract_azkaban" do
-  command "tar -xzf #{azkaban_tar} -C #{node[:azkaban][:deploy_to]} --strip=1"
+  command "tar -xzf #{azkaban_tar} -C #{node[:azkaban][:deploy_to]}"
   action :nothing
+end
+
+link "#{node[:azkaban][:deploy_to]}/azkaban" do
+  to "#{node[:azkaban][:deploy_to]}/azkaban-#{node[:azkaban][:version]}"
+  owner node[:azkaban][:user]
+  group node[:azkaban][:group]
+end
+
+template "/etc/profile.d/azkaban.sh" do
+  mode 0755
+  owner "root"
+  group "root"
+  action :create_if_missing
 end
