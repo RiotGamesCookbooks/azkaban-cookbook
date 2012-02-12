@@ -16,11 +16,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 default[:azkaban][:user] = "azkaban"
 default[:azkaban][:group] = "azkaban"
 default[:azkaban][:version] = "0.10"
-default[:azkaban][:job_dir] = "/srv/azkaban-jobs"
 default[:azkaban][:deploy_to] = "/srv"
-default[:azkaban][:source_tar] = "https://github.com/downloads/azkaban/azkaban"
+default[:azkaban][:job_dir] = "#{node[:azkaban][:deploy_to]}/azkaban-jobs"
+default[:azkaban][:repo_url] = "https://github.com/downloads/azkaban/azkaban"

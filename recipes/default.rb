@@ -28,31 +28,37 @@ user node[:azkaban][:user] do
   shell "/bin/false"
 end
 
-[:job_dir, :deploy_to].each do |directory|
-  directory node[:azkaban][directory] do
-    mode 0750
-    owner node[:azkaban][:user]
-    group node[:azkaban][:group]
-    action :create
-    recursive true
-  end
-end
+directory node[:azkaban][:deploy_to]
 
 azkaban_tar = "#{Chef::Config[:file_cache_path]}/azkaban-#{node[:azkaban][:version]}.tar.gz"
 
-log "Downloading Azkaban..."
+log "Downloading Azkaban... "
 
 remote_file azkaban_tar do
-  source "#{node[:azkaban][:source_tar]}/azkaban-#{node[:azkaban][:version]}.tar.gz"
+  source "#{node[:azkaban][:repo_url]}/azkaban-#{node[:azkaban][:version]}.tar.gz"
   action :create_if_missing
-  
-  notifies :run, "execute[extract_azkaban]", :immediately
-  not_if { File.exists?("#{node[:azkaban][:deploy_to]}/bin") }
 end
 
 execute "extract_azkaban" do
   command "tar -xzf #{azkaban_tar} -C #{node[:azkaban][:deploy_to]}"
-  action :nothing
+  action :run
+  not_if { File.exists?("#{node[:azkaban][:deploy_to]}/azkaban-#{node[:azkaban][:version]}") }
+end
+
+directory node[:azkaban][:job_dir] do
+  mode 0750
+  owner node[:azkaban][:user]
+  group node[:azkaban][:group]
+  action :create
+  recursive true
+end
+
+directory "#{node[:azkaban][:deploy_to]}/azkaban-#{node[:azkaban][:version]}" do
+  mode 0750
+  owner node[:azkaban][:user]
+  group node[:azkaban][:group]
+  action :create
+  recursive true
 end
 
 link "#{node[:azkaban][:deploy_to]}/azkaban" do
@@ -62,7 +68,7 @@ link "#{node[:azkaban][:deploy_to]}/azkaban" do
 end
 
 template "/etc/profile.d/azkaban.sh" do
-  mode 0755
+  mode 0644
   owner "root"
   group "root"
   action :create_if_missing
