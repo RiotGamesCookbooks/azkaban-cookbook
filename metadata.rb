@@ -8,3 +8,5 @@ version          "0.0.1"
 %w{ centos redhat fedora }.each do |os|
   supports os
 end
+
+depends 'java', '~> 1.3.1'

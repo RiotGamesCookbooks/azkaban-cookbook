@@ -19,6 +19,8 @@
 # limitations under the License.
 #
 
+include_recipe 'java'
+
 group node[:azkaban][:group]
 
 user node[:azkaban][:user] do

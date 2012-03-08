@@ -17,6 +17,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+include_attribute 'java'
+
+set[:java][:install_flavor] = "oracle"
+
 default[:azkaban][:user] = "azkaban"
 default[:azkaban][:group] = "azkaban"
 default[:azkaban][:version] = "0.10"
